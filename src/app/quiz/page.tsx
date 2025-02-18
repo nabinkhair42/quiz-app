@@ -100,6 +100,7 @@ export default function QuizPage() {
       });
       router.push('/history');
     } catch (error) {
+      console.error("Failed to save quiz attempt:", error);
       toast.error("Failed to save quiz attempt", {
         icon: <XCircle className="h-4 w-4" />,
       });
