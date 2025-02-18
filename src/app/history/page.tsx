@@ -60,6 +60,7 @@ export default function HistoryPage() {
       toast.success("Quiz history cleared successfully")
     } catch (error) {
       toast.error("Failed to clear history")
+      console.error("Failed to clear history:", error)
     }
   }
 

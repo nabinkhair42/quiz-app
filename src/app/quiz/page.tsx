@@ -27,7 +27,6 @@ export default function QuizPage() {
     setAnswer,
     setCurrentQuestion,
     completeQuiz,
-    isComplete,
     timeRemaining,
     startTime,
     startQuiz,
