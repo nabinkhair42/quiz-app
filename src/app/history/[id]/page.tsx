@@ -10,6 +10,7 @@ import { CheckCircle, ChevronLeft, XCircle } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { formatDate } from "@/lib/helpers/history";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -47,16 +48,6 @@ export default function QuizDetailsPage({ params }: PageProps) {
   if (!attempt) {
     return null;
   }
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
 
   return (
     <div className="container mx-auto max-w-3xl space-y-6">

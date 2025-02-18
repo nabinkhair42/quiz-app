@@ -9,6 +9,7 @@ import { Trophy, Clock, Calendar, Percent, ArrowUpRight, Trash2, Eye } from "luc
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { toast } from "sonner"
 import Link from "next/link"
+import { formatDate, getDuration, getScoreColor } from "@/lib/helpers/history"
 
 export default function HistoryPage() {
   const [attempts, setAttempts] = useState<QuizAttempt[]>([])
@@ -33,26 +34,7 @@ export default function HistoryPage() {
     return <div className="flex justify-center items-center h-40">Loading...</div>
   }
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
-
-  const getScoreColor = (score: number) => {
-    if (score >= 8) return "text-green-500"
-    if (score >= 6) return "text-yellow-500"
-    return "text-red-500"
-  }
-
-  const getDuration = (start: number, end: number) => {
-    return `${Math.round((end - start) / 1000)}s`
-  }
-
+  
   const handleClearHistory = async () => {
     try {
       await clearQuizAttempts()
