@@ -1,8 +1,8 @@
 "use client"
 
-import { Input } from "../ui/input";
+import { Input } from "../../../components/ui/input";
 import { useState, useEffect, KeyboardEvent } from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../../components/ui/button";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 interface IntegerInputProps {

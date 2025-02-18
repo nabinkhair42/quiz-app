@@ -1,21 +1,16 @@
 "use client";
 
-import { QuestionCard } from "@/components/quiz/QuestionCard";
-import { Timer } from "@/components/quiz/Timer";
+import { QuestionCard } from "@/app/quiz/_components/QuestionCard";
+import { Timer } from "@/app/quiz/_components/Timer";
+import { QuizHeader } from "@/app/quiz/_components/QuizHeader";
+import { QuizActions } from "@/app/quiz/_components/QuizActions";
 import { quizQuestions } from "@/lib/data/quiz-questions";
 import { useQuizStore } from "@/store/quiz-store";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { saveQuizAttempt } from "@/lib/db";
+import { createQuizAttempt } from "@/lib/utils/quiz";
 import { toast } from "sonner";
-import { 
-  ArrowRight, 
-  LogOut, 
-  AlertTriangle,
-  CheckCircle2,
-  Timer as TimerIcon,
-  XCircle
-} from "lucide-react";
+import { AlertTriangle, CheckCircle2, TimerIcon, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 
@@ -83,18 +78,11 @@ export default function QuizPage() {
     }
 
     completeQuiz();
-    const score = calculateScore();
-    const attempt = {
-      id: Date.now().toString(),
-      startTime: startTime!,
-      endTime: Date.now(),
-      answers,
-      score,
-    };
+    const attempt = createQuizAttempt(answers, startTime!);
     
     try {
       await saveQuizAttempt(attempt);
-      toast.success(`Quiz completed! Your score: ${score}/10`, {
+      toast.success(`Quiz completed! Your score: ${attempt.score}/10`, {
         icon: <CheckCircle2 className="h-4 w-4" />,
         duration: 3000,
       });
@@ -117,17 +105,9 @@ export default function QuizPage() {
     });
   };
 
-  const calculateScore = () => {
-    return Object.entries(answers).reduce((score, [id, answer]) => {
-      const question = quizQuestions.find(q => q.id === parseInt(id));
-      return question?.correctAnswer === answer ? score + 1 : score;
-    }, 0);
-  };
-
   const handleAnswer = (answer: string | number) => {
     setAnswer(currentQuestion.id, answer);
     
-    // Only show toast for multiple choice answers
     if (currentQuestion.type === 'multiple-choice') {
       toast.success("Answer recorded!", {
         icon: <CheckCircle2 className="h-4 w-4" />,
@@ -143,12 +123,10 @@ export default function QuizPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Quiz Progress</h1>
-        <span className="text-muted-foreground">
-          Question {currentQuestionIndex + 1} of {quizQuestions.length}
-        </span>
-      </div>
+      <QuizHeader 
+        currentQuestion={currentQuestionIndex} 
+        totalQuestions={quizQuestions.length} 
+      />
 
       <Timer onTimeUp={handleTimeUp} />
       
@@ -159,32 +137,12 @@ export default function QuizPage() {
         isDisabled={timeRemaining <= 0}
       />
 
-      <div className="flex justify-between mt-8">
-        <Button
-          variant="outline"
-          onClick={handleQuit}
-          className="flex items-center gap-2"
-        >
-          <LogOut className="h-4 w-4" />
-          Quit Quiz
-        </Button>
-        <Button 
-          onClick={handleNext}
-          className="flex items-center gap-2"
-        >
-          {currentQuestionIndex < quizQuestions.length - 1 ? (
-            <>
-              Next Question
-              <ArrowRight className="h-4 w-4" />
-            </>
-          ) : (
-            <>
-              Complete Quiz
-              <CheckCircle2 className="h-4 w-4" />
-            </>
-          )}
-        </Button>
-      </div>
+      <QuizActions 
+        currentQuestionIndex={currentQuestionIndex}
+        totalQuestions={quizQuestions.length}
+        onNext={handleNext}
+        onQuit={handleQuit}
+      />
     </motion.div>
   );
 } 

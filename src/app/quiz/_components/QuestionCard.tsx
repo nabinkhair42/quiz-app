@@ -1,13 +1,13 @@
 "use client"
 
 import { Question } from "@/lib/types/quiz";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import { MultipleChoiceInput } from "./MultipleChoiceInput";
 import { IntegerInput } from "./IntegerInput";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../../components/ui/badge";
 import { Brain, Calculator, HelpCircle, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface QuestionCardProps {

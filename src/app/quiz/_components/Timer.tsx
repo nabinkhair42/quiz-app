@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useCallback } from "react";
-import { Progress } from "../ui/progress";
+import { Progress } from "../../../components/ui/progress";
 import { useQuizStore } from "@/store/quiz-store";
 import { cn } from "@/lib/utils";
 
