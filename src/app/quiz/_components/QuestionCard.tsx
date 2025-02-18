@@ -1,6 +1,6 @@
 "use client"
 
-import { Question } from "@/lib/types/quiz";
+import { Question } from "@/types/quiz";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import { MultipleChoiceInput } from "./MultipleChoiceInput";
 import { IntegerInput } from "./IntegerInput";

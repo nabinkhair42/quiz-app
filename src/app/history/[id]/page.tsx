@@ -1,16 +1,16 @@
 "use client"
 
 import { useEffect, useState, use } from "react";
-import { QuizAttempt } from "@/lib/types/quiz";
+import { QuizAttempt } from "@/types/quiz";
 import { getQuizAttempt } from "@/lib/db";
-import { quizQuestions } from "@/lib/data/quiz-questions";
+import { quizQuestions } from "@/data/quiz-questions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ChevronLeft, XCircle } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { formatDate } from "@/lib/helpers/history";
+import { formatDate } from "@/lib/helper";
 
 interface PageProps {
   params: Promise<{ id: string }>;

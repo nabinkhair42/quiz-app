@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { PlayCircle, History, Brain } from "lucide-react"
-import { features } from "@/constants/feature"
+import { features } from "@/data/constants/feature"
 
 export default function Home() {
   return (

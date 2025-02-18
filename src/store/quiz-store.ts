@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { QuizState } from '@/lib/types/quiz';
-import { quizQuestions } from '@/lib/data/quiz-questions';
+import { QuizState } from '@/types/quiz';
+import { quizQuestions } from '@/data/quiz-questions';
 
 interface QuizStore extends QuizState {
   startTime: number | null;

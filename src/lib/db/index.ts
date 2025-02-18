@@ -1,5 +1,5 @@
 import { openDB } from 'idb';
-import { QuizAttempt } from '../types/quiz';
+import { QuizAttempt } from '../../types/quiz';
 
 const DB_NAME = 'quiz-platform';
 const STORE_NAME = 'attempts';

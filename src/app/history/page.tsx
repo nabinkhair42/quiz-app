@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { QuizAttempt } from "@/lib/types/quiz"
+import type { QuizAttempt } from "@/types/quiz"
 import { clearQuizAttempts, getQuizAttempts } from "@/lib/db"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,7 @@ import { Trophy, Clock, Calendar, Percent, ArrowUpRight, Trash2, Eye } from "luc
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { toast } from "sonner"
 import Link from "next/link"
-import { formatDate, getDuration, getScoreColor } from "@/lib/helpers/history"
+import { formatDate, getDuration, getScoreColor } from "@/lib/helper"
 
 export default function HistoryPage() {
   const [attempts, setAttempts] = useState<QuizAttempt[]>([])
