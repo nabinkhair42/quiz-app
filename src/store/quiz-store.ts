@@ -4,6 +4,7 @@ import { quizQuestions } from '@/lib/data/quiz-questions';
 
 interface QuizStore extends QuizState {
   startTime: number | null;
+  isQuizActive: boolean;
   setAnswer: (questionId: number, answer: string | number) => void;
   setCurrentQuestion: (index: number) => void;
   setTimeRemaining: (time: number) => void;
@@ -19,6 +20,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   answers: {},
   isComplete: false,
   startTime: null,
+  isQuizActive: false,
 
   startQuiz: () => 
     set({ 
@@ -27,6 +29,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
       timeRemaining: 30,
       answers: {},
       isComplete: false,
+      isQuizActive: true,
     }),
 
   setAnswer: (questionId, answer) =>
@@ -39,7 +42,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
 
   setTimeRemaining: (time) => set({ timeRemaining: time }),
 
-  completeQuiz: () => set({ isComplete: true }),
+  completeQuiz: () => set({ isComplete: true, isQuizActive: false }),
 
   resetQuiz: () =>
     set({
@@ -48,6 +51,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
       answers: {},
       isComplete: false,
       startTime: null,
+      isQuizActive: false,
     }),
 
   canProceed: () => {

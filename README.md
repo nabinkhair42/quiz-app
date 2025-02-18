@@ -2,6 +2,18 @@
 
 A modern quiz application built with Next.js 14, featuring timed questions, multiple choice and numerical answers, and detailed performance tracking.
 
+## State Management using Zustand
+- Quiz progress and answers
+- Timer state
+- Quiz history
+- Theme preferences
+
+## Data Persistence using IndexedDB
+- Quiz attempt history
+- Performance metrics
+- User preferences
+
+
 ![Quiz Platform Screenshot](./public/screenshot.png)
 
 ## Features
@@ -37,17 +49,3 @@ A modern quiz application built with Next.js 14, featuring timed questions, mult
 - **Icons**: Lucide Icons
 - **Toast Notifications**: Sonner
 
-## State Management
-
-Using Zustand for managing:
-- Quiz progress and answers
-- Timer state
-- Quiz history
-- Theme preferences
-
-## Data Persistence
-
-- Local storage using IndexedDB
-- Quiz attempt history
-- Performance metrics
-- User preferences

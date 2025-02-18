@@ -6,16 +6,21 @@ import { QuizHeader } from "@/app/quiz/_components/QuizHeader";
 import { QuizActions } from "@/app/quiz/_components/QuizActions";
 import { quizQuestions } from "@/lib/data/quiz-questions";
 import { useQuizStore } from "@/store/quiz-store";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { saveQuizAttempt } from "@/lib/db";
 import { createQuizAttempt } from "@/lib/utils/quiz";
 import { toast } from "sonner";
-import { AlertTriangle, CheckCircle2, TimerIcon, XCircle } from "lucide-react";
+import { CheckCircle2, TimerIcon, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { QuizDialog } from "./_components/QuizDialog";
 
 export default function QuizPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const [showDialog, setShowDialog] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
+  const [intendedPath, setIntendedPath] = useState<string | null>(null);
   const {
     currentQuestionIndex,
     answers,
@@ -26,6 +31,7 @@ export default function QuizPage() {
     startTime,
     startQuiz,
     canProceed,
+    isQuizActive,
   } = useQuizStore();
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
@@ -33,6 +39,62 @@ export default function QuizPage() {
   useEffect(() => {
     startQuiz();
   }, [startQuiz]);
+
+  // Handle browser close/refresh
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isQuizActive) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isQuizActive]);
+
+  // Handle navigation
+  const handleNavigation = useCallback((path: string) => {
+    if (isQuizActive) {
+      setIntendedPath(path);
+      setShowDialog(true);
+      return false;
+    }
+    return true;
+  }, [isQuizActive]);
+
+  const handleConfirmLeave = useCallback(() => {
+    setIsLeaving(true);
+    if (intendedPath) {
+      router.push(intendedPath);
+    } else {
+      router.push('/');
+    }
+  }, [router, intendedPath]);
+
+  const handleQuit = useCallback(() => {
+    handleNavigation('/');
+  }, [handleNavigation]);
+
+  // Intercept navigation attempts
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      if (anchor && anchor.href) {
+        const url = new URL(anchor.href);
+        if (url.pathname !== pathname) {
+          e.preventDefault();
+          if (handleNavigation(url.pathname)) {
+            router.push(url.pathname);
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [pathname, router, handleNavigation]);
 
   const handleTimeUp = () => {
     if (currentQuestionIndex === quizQuestions.length - 1) {
@@ -95,16 +157,6 @@ export default function QuizPage() {
     }
   };
 
-  const handleQuit = () => {
-    toast.warning("Quiz progress will be lost!", {
-      icon: <AlertTriangle className="h-4 w-4" />,
-      action: {
-        label: "Quit anyway",
-        onClick: () => router.push('/'),
-      },
-    });
-  };
-
   const handleAnswer = (answer: string | number) => {
     setAnswer(currentQuestion.id, answer);
     
@@ -116,33 +168,48 @@ export default function QuizPage() {
     }
   };
 
+  if (isLeaving) {
+    return null; // Prevent flash of content during navigation
+  }
+
   return (
-    <motion.div 
-      className="container mx-auto max-w-2xl space-y-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <QuizHeader 
-        currentQuestion={currentQuestionIndex} 
-        totalQuestions={quizQuestions.length} 
-      />
+    <>
+      <motion.div 
+        className="container mx-auto max-w-2xl space-y-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <QuizHeader 
+          currentQuestion={currentQuestionIndex} 
+          totalQuestions={quizQuestions.length} 
+        />
 
-      <Timer onTimeUp={handleTimeUp} />
-      
-      <QuestionCard
-        question={currentQuestion}
-        onAnswer={handleAnswer}
-        currentAnswer={answers[currentQuestion.id]}
-        isDisabled={timeRemaining <= 0}
-      />
+        <Timer onTimeUp={handleTimeUp} />
+        
+        <QuestionCard
+          question={currentQuestion}
+          onAnswer={handleAnswer}
+          currentAnswer={answers[currentQuestion.id]}
+          isDisabled={timeRemaining <= 0}
+        />
 
-      <QuizActions 
-        currentQuestionIndex={currentQuestionIndex}
-        totalQuestions={quizQuestions.length}
-        onNext={handleNext}
-        onQuit={handleQuit}
+        <QuizActions 
+          currentQuestionIndex={currentQuestionIndex}
+          totalQuestions={quizQuestions.length}
+          onNext={handleNext}
+          onQuit={handleQuit}
+        />
+      </motion.div>
+
+      <QuizDialog 
+        isOpen={showDialog}
+        onClose={() => {
+          setShowDialog(false);
+          setIntendedPath(null);
+        }}
+        onConfirm={handleConfirmLeave}
       />
-    </motion.div>
+    </>
   );
 } 
